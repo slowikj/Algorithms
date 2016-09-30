@@ -3,35 +3,48 @@
 class LowestPrimeDivisorsGenerator:
 	def __init__(self, n):
 		self.__n = int(n)
-		self.__lowestPrimeDivisor = None
+		self.__lowestPrimeDivisors = None
 
 	def get(self, x):
-		if self.__lowestPrimeDivisor is None:
-			self.__lowestPrimeDivisor = self.__get_divisors()
+		if self.__lowestPrimeDivisors is None:
+			self.__lowestPrimeDivisors = self.__get_lowest_divisors()
 
-		return self.__lowestPrimeDivisor[x]
+		return self.__lowestPrimeDivisors[x]
 
 	def getAll(self):
 		return [self.get(x) for x in range(0, self.__n + 1)]
 
-	def __get_divisors(self):
-		divisors = self.__initial_divisors()
-
-		is_prime = lambda x: divisors[x] == x
+	def __get_lowest_divisors(self):
+		res = LowestPrimeDivisorsGenerator.__Divisors(self.__n)
+		is_prime = lambda x: res.get(x) == x
 
 		for x in range(2, self.__n + 1):
 			if is_prime(x):
-				self.__set_divisor(x, divisors)
+				res.set_divisor(x)
 
-		return divisors
+		return res.getAll()
 
-	def __initial_divisors(self):
-		return list(range(self.__n + 1))
+	class __Divisors:
+		def __init__(self, n):
+			self.__n = int(n)
+			self.__divisors = self.__get_initial_divisors()
 
-	def __set_divisor(self, x, divisors):
-		j = x * x
-		
-		while j < len(divisors):
-			divisors[j] = min(divisors[j], x)
+		def __get_initial_divisors(self):
+			return list(range(self.__n + 1))
 
-			j += x
+		def set_divisor(self, x):
+			j = x * x
+			
+			while j < len(self.__divisors):
+				self.__divisors[j] = min(self.__divisors[j], x)
+				j += x
+
+		def getAll(self):
+			return self.__divisors
+
+		def get(self, x):
+			return self.__divisors[x]
+
+
+	
+	
